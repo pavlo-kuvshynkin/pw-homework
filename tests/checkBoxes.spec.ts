@@ -11,39 +11,37 @@ test.describe('Checkboxes', () => {
 
     test('Test Case 1: Validate selected specialties', async ({page}) => {
         //3. Locating targeted row and clicking 'Edit'
-        const tableRows = page.getByRole('row', { name: 'Helen Leary' })
-        await tableRows.getByRole('button', {name: "Edit Vet"}).click()
+        await page.getByRole('row', {name: 'Helen Leary'}).getByRole('button', {name: 'Edit Vet'}).click()
         //4. Asserting specialties fields has value 'radiology'
-        const specialtiesField = page.locator('.dropdown .selected-specialties')
+        const specialtiesField = page.locator('.selected-specialties')
         await expect(specialtiesField).toHaveText('radiology')
         //5. Clicking specialties field to show up menu with checkboxes
         await specialtiesField.click()
         //6. Asserting 'radiology' is checked
-        const checkBox1 = page.getByRole('checkbox', {name:'radiology'})
-        await checkBox1.check()
-        expect(await checkBox1.isChecked()).toBeTruthy()
+        const radiologyBox = page.getByRole('checkbox', {name:'radiology'})
+        await radiologyBox.check()
+        expect(await radiologyBox.isChecked()).toBeTruthy()
         //7. Asserting 'surgery' & 'dentistry' are unchecked
-        const checkBox2 = page.getByRole('checkbox', {name:'surgery'})
-        expect(await checkBox2.isChecked()).toBeFalsy()
-        const checkBox3 = page.getByRole('checkbox', {name:'dentistry'})
-        expect(await checkBox3.isChecked()).toBeFalsy()
+        const surgeryBox = page.getByRole('checkbox', {name:'surgery'})
+        expect(await surgeryBox.isChecked()).toBeFalsy()
+        const dentistryBox = page.getByRole('checkbox', {name:'dentistry'})
+        expect(await dentistryBox.isChecked()).toBeFalsy()
         //8. Check 'surgery' & uncheck 'radiology'
-        await checkBox1.uncheck()
-        await checkBox2.check()
+        await radiologyBox.uncheck()
+        await surgeryBox.check()
         //9. Asserting specialties fields has value 'radiology'
         await expect(specialtiesField).toHaveText('surgery')
         //10. Check 'dentistry'
-        await checkBox3.check()
+        await dentistryBox.check()
         //9. Asserting specialties fields has both values 'surgery, dentistry'
         await expect(specialtiesField).toHaveText('surgery, dentistry')
     })
 
     test('Test Case 2: Select all specialties', async ({page}) => {
         //2. Locating targeted row and clicking 'Edit'
-        const tableRows = page.getByRole('row', { name: 'Rafael Ortega' })
-        await tableRows.getByRole('button', {name: "Edit Vet"}).click()
+        await page.getByRole('row', {name: 'Rafael Ortega'}).getByRole('button', {name: 'Edit Vet'}).click()
         //3. Asserting specialties fields has value 'radiology'
-        const specialtiesField = page.locator('.dropdown .selected-specialties')
+        const specialtiesField = page.locator('.selected-specialties')
         await expect(specialtiesField).toHaveText('surgery')
         //4. Clicking specialties field to show up menu with checkboxes
         await specialtiesField.click()
@@ -59,10 +57,9 @@ test.describe('Checkboxes', () => {
 
     test('Test Case 3: Unselect all specialties', async ({page}) => {
         //2. Locating targeted row and clicking 'Edit'
-        const tableRows = page.getByRole('row', { name: 'Linda Douglas' })
-        await tableRows.getByRole('button', {name: "Edit Vet"}).click()
+        await page.getByRole('row', { name:'Linda Douglas'}).getByRole('button', {name: 'Edit Vet'}).click()
         //3. Asserting specialties fields has value 'radiology'
-        const specialtiesField = page.locator('.dropdown .selected-specialties')
+        const specialtiesField = page.locator('.selected-specialties')
         await expect(specialtiesField).toHaveText('dentistry, surgery')
         //4. Clicking specialties field to show up menu with checkboxes
         await specialtiesField.click()
@@ -73,6 +70,6 @@ test.describe('Checkboxes', () => {
             expect(await box.isChecked()).toBeFalsy()
         }
         //6. Asserting there are no specialties filed
-        await expect(specialtiesField).toHaveText('')
+        await expect(specialtiesField).toBeEmpty()
     })
 })
