@@ -36,8 +36,8 @@ test.describe('Input fields', () => {
 
     test('Test Case 2: Cancel pet type update', async ({page}) => {
         //Creating locator for targeted table row that is going to be edited
-        const petTypeTableRow = page.getByRole('row', { name: 'dog' })
-        await petTypeTableRow.getByRole('button', {name: "Edit"}).click()
+        const petDogTableRow = page.getByRole('row', { name: 'dog' })
+        await petDogTableRow.getByRole('button', {name: "Edit"}).click()
         //Clearing the field and filling 'moose'
         const nameInputField = page.locator('#name')
         await nameInputField.click()
@@ -48,7 +48,7 @@ test.describe('Input fields', () => {
         //Clicking the 'Cancel' button
         await page.getByRole('button', {name: "Cancel"}).click()
         //Then asserting the 'dog' value is remaining for the same row
-        await expect(petTypeTableRow.locator('[id="1"]')).toHaveValue('dog')
+        await expect(petDogTableRow.locator('[id="1"]')).toHaveValue('dog')
     });
 
     test('Test Case 3: Pet type name is required validation', async ({page}) => {
