@@ -15,7 +15,7 @@ test.describe('listsAndDropDowns', () => {
         // 4. Assert the owner name is 'George Franklin'
         await expect(page.locator('.ownerFullName')).toHaveText('George Franklin')
         // 5. Click on the 'Edit Pet' button for an existing pet
-        await page.getByRole('button', { name: 'Edit Pet' }).click()
+        await page.locator('app-pet-list', {hasText: "Leo"}).getByRole('button', {name: 'Edit Pet'}).click()
         // 6. Assert 'Pet' title is displayed
         await expect(page.locator('h2')).toHaveText('Pet')
         // 7. Assert that the owner field has the value 'George Franklin'
@@ -65,6 +65,6 @@ test.describe('listsAndDropDowns', () => {
         await expect(petTypeField).toHaveValue('dog')
         await expect(dropDownField).toHaveValue('dog')
         await updatePetBtn.click()
-        await expect(petRosyTable).toContainText('dog')
+        await expect(petRosyTable.locator('td', {hasText: "Type"})).toContainText('dog')
     })
 })
