@@ -31,7 +31,6 @@ test.describe('listsAndDropDowns', () => {
             await dropDownMenu.selectOption(petOption)
             await expect(petTypeField).toHaveValue(petOption)
             if (petOption === 'hamster') {
-                break
             }
         }
     })
@@ -40,8 +39,8 @@ test.describe('listsAndDropDowns', () => {
         // 3. Select the first owner from the table
         await page.getByRole('link', { name: 'Eduardo Rodriquez' }).click()
         // 4. Locating Pet and Visits table for a pet 'Rosy' and click on the 'Edit Pet' button for an existing pet
-        const petRosyTable = page.locator('app-pet-list', {hasText: "Rosy"})
-        await petRosyTable.getByRole('button', {name: 'Edit Pet'}).click()
+        const petRosySection = page.locator('app-pet-list', {hasText: "Rosy"})
+        await petRosySection.getByRole('button', {name: 'Edit Pet'}).click()
         // 5. Assert the name 'Rosy' is displayed in the pet name field
         await expect(page.getByLabel('Name')).toHaveValue("Rosy")
         // 6. Create a locator for the "Type" field and assert it initially has 'dog' value
@@ -57,14 +56,14 @@ test.describe('listsAndDropDowns', () => {
         const updatePetBtn = page.getByRole('button', {name: 'Update Pet'})
         await updatePetBtn.click()
         //10. Assert that pet "Rosy" has a new value of the Type "bird" on the "Pet details" page
-        await expect(petRosyTable).toContainText('bird')
+        await expect(petRosySection).toContainText('bird')
         //11. Reverting pet type back to 'dog' by going through steps from 6 to 10
-        await petRosyTable.getByRole('button', {name: 'Edit Pet'}).click()
+        await petRosySection.getByRole('button', {name: 'Edit Pet'}).click()
         await expect(petTypeField).toHaveValue('bird')
         await dropDownField.selectOption('dog')
         await expect(petTypeField).toHaveValue('dog')
         await expect(dropDownField).toHaveValue('dog')
         await updatePetBtn.click()
-        await expect(petRosyTable.locator('td', {hasText: "Type"})).toContainText('dog')
+        await expect(petRosySection.locator('td', {hasText: "Type"})).toContainText('dog')
     })
 })
