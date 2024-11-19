@@ -30,8 +30,6 @@ test.describe('listsAndDropDowns', () => {
         for (const petOption of petTypeOptions) {
             await dropDownMenu.selectOption(petOption)
             await expect(petTypeField).toHaveValue(petOption)
-            if (petOption === 'hamster') {
-            }
         }
     })
 
