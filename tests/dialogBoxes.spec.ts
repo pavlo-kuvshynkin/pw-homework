@@ -18,10 +18,10 @@ import { test, expect } from '@playwright/test'
         //6. Assert that the last item in the list of pet types has value of "pig"
         const petPigTableRow = page.getByRole('row', {name: "pig"})
         await expect(petPigTableRow.locator('input')).toHaveValue('pig')
-            //7. Adding browser dialog listener before clicking delete and making an assertion to validate the message of the dialog box "Delete the pet type?"
+        //7. Adding browser dialog listener before clicking delete and making an assertion to validate the message of the dialog box "Delete the pet type?"
         page.on('dialog', dialog => {
             expect(dialog.message()).toEqual('Delete the pet type?')
-            //8. Click on OK button on the dialog box
+        //8. Click on OK button on the dialog box
             dialog.accept()
         })
         //7. Click on "Delete" button for the 'pig' pet
