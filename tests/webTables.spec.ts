@@ -23,27 +23,20 @@ test.describe('Web tables of Owners', () => {
     test('TC 3: Validate search by Last Name', async ({page}) => {
         //2.  In the "Last name" input field, type the last name "Black" and click the "Find Owner" button
         const ownerLastNames = ["Black", "Davis", "Es", "Playwright"]
-        //Creating a loop to search for values from an 'ownerLastNames' array
-        for(let ownerLastName of ownerLastNames){
-            const lastNameInputField = page.getByRole('textbox')
-            const findOwnerButton = page.getByRole('button', {name:"Find Owner"})
-            await lastNameInputField.fill(ownerLastName)
-            await findOwnerButton.click()
-            await page.waitForResponse(response => response.url().includes('/petclinic/api/owners') && response.status() === 200)
-            const targetedTableRows = page.locator('tbody tr')
-        //3. Assert that the displayed owner in the table has a last name indicated in an array.
-            for(let row of await targetedTableRows.all()){
-                const ownerNameCellValue = await row.locator('.ownerFullName').textContent() //The locator is incorrect for some reason
-
-                if(ownerLastName == "Playwright"){
-                    await expect(page.getByText('No owners with LastName starting with')).toContainText(`No owners with LastName starting with "${ownerLastName}"`)
-                }
-                else{
-                    expect(ownerNameCellValue).toContain(ownerLastName)
+        for (let ownerLastName of ownerLastNames) {
+            await page.getByRole('textbox').fill(ownerLastName)
+            await page.getByRole('button', { name: "Find Owner" }).click()
+            if (ownerLastName !== "Playwright") {
+                await page.waitForResponse('**/petclinic/api/owners*')
+                for (let row of await page.locator('.ownerFullName').all()) {
+                    await expect(row).toContainText(ownerLastName)
                 }
             }
+            else {
+                await expect(page.locator('.xd-container')).toContainText(`No owners with LastName starting with "${ownerLastName}"`)
+            }
         }
-    });
+    })
 
     test('TC 4: Validate phone number and pet name on the Owner Information page', async ({page}) => {
         //2. Locate the owner by the phone number "6085552765". Extract the Pet name displayed in the table for the owner and saving it to a const. Then click on this owner.
