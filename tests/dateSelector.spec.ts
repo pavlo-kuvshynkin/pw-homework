@@ -24,8 +24,8 @@ test.describe('Web datepicker scenarios', () => {
         await page.getByLabel('Choose month and year').click()
         await page.getByLabel('Previous 24 years').click()
         await page.getByLabel('2014').click()
-        await page.getByLabel('05').click()
-        await page.getByLabel('/05/02').click()
+        await page.getByText('MAY').click()
+        await page.getByText('2', {exact: true}).click()
         //8. Assert the input field is in the format "2014/05/02"
         await expect(page.locator('input[name="birthDate"]')).toHaveValue("2014/05/02")
         //9. Select the type of pet "dog" and click "Save Pet" button
@@ -69,7 +69,7 @@ test.describe('Web datepicker scenarios', () => {
         //Select current date in the datepicker
         await page.getByText(expectedDate, {exact: true}).click()
         //7. Assert that selected date is displayed and it is in the format "YYYY/MM/DD"
-        await expect(page.locator('.mat-datepicker-input')).toHaveValue(dateToAssert)
+        await expect(page.locator('input[name="date"]')).toHaveValue(dateToAssert)
         //8. Type the description in the field, for example, "dermatologists visit" and click "Add Visit" button
         await page.locator('#description').fill("dermatologists visit")
         await page.getByRole('button', {name: 'Add Visit'}).click()
