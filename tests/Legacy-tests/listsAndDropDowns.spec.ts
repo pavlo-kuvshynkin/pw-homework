@@ -11,7 +11,7 @@ test.describe('listsAndDropDowns', () => {
 
     test('TC 1: Validate selected pet types from the list', async ({ page }) => {
         // 3. Select the first owner from the table
-        await page.getByRole('link', { name: 'George Franklin' }).click()
+        await page.getByRole('link', { name: 'George Franklin' }).click()  
         // 4. Assert the owner name is 'George Franklin'
         await expect(page.locator('.ownerFullName')).toHaveText('George Franklin')
         // 5. Click on the 'Edit Pet' button for an existing pet
