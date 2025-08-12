@@ -1,56 +1,37 @@
 import {Page, expect, Locator} from '@playwright/test'
+import {HelperBase} from './helperBase'
 
-export class AddNewVisitPage {
-
-    readonly page: Page
-    todaysDate: string = ''
-    pastDate: string = ''
-    todaysVisitDescription: string = ''
-    pastVisitDescription: string = ''
+export class AddNewVisitPage extends HelperBase{
     
     constructor(page: Page){
-        this.page = page
+        super(page)
     }
 
-    async selectTodaysDateUsingCalendarAndValidateDateFormatInTheInputField(){
-        //1. Open calendar
-        await this.page.getByLabel('Open calendar').click()
-        //2. Getting current date
-        let date = new Date()
-        date.setDate(date.getDate())
-        //Making date format output to be asserted
-        const expectedDate = date.toLocaleString('En-US', {day: '2-digit'})
-        const expectedMonth = date.toLocaleString('En-US', {month : '2-digit'})
-        const expectedYear = date.getFullYear()
-        const dateToAssert = `${expectedYear}/${expectedMonth}/${expectedDate}`
-        //3. Select current date in the datepicker
-        await this.page.getByText(expectedDate, {exact: true}).click()
-        //4. Assert that selected  today's date is displayed in the format "YYYY/MM/DD"
-        await expect(this.page.locator('input[name="date"]')).toHaveValue(dateToAssert)
-
-        this.todaysDate = `${expectedYear}-${expectedMonth}-${expectedDate}` //To be used for assertions on the Owner Information and Add new visit pages
+    /**
+     * @param numberOfDaysFromToday - this parameter should take negative value (-41) to select past date and positive value (+25) to select future date or "0" to select today's date
+     */
+    async selectVisitDateUsingCalendarAndAssertSelectedDateInTheInputField(numberOfDaysFromToday: number){
+        //1. Using HelperBase class call a method to select desired date using calendar and store returned date format for assertion
+        const expectedDateToAssert = await this.selectAnyDateFromTodayUsingCalendar(numberOfDaysFromToday)
+        //2. Comparing returned date for assertion with one in the input field
+        await expect(this.page.locator('.mat-datepicker-input')).toHaveValue(expectedDateToAssert)
     }
 
-    async selectPastDateUsingCalendarForAPetVisit(numberOfDaysBack: number){
-        await this.page.getByLabel('Open calendar').click()
-        //1. Set date to be N days back from the current date
-        let date = new Date()
-        date.setDate(date.getDate() - numberOfDaysBack)
-        //2. Recalculate expected month and year
-        const expectedVisitDay = date.getDate().toString()
-        const expectedMonthVisit = date.toLocaleString('En-US', {month : '2-digit'})
-        const expectedYearVisit = date.getFullYear()
-        const expectedMonthAndYearVisit = `${expectedMonthVisit} ${expectedYearVisit}`
-        //3. Ensure the correct month is selected in the calendar
-        let calendarMonthAndYear = await this.page.locator('.mat-calendar-period-button').innerText()
-        //4. Create a loop to select a date N days back from the current date for the cases that exceed the current month
-        while(!calendarMonthAndYear.includes(expectedMonthAndYearVisit)){
-            await this.page.getByLabel('Previous month').click()
-            calendarMonthAndYear = await this.page.getByLabel('Choose month and year').innerText()
-        }
-        await this.page.getByText(expectedVisitDay, {exact: true}).click()
+    async getDateFromTheInputFieldInHyphenFormat(){
+        //1. Get the date from the input field
+        const selectedDate = await this.page.locator('.mat-datepicker-input').inputValue()
+        //2. Reformatting date to hyphen format for assertion
+        return selectedDate.replace(/\//g, '-')
+    }
 
-        this.pastDate = `${expectedYearVisit}-${expectedMonthVisit}-${expectedVisitDay.padStart(2, '0')}` //To be used for assertions on the Owner Information and Add New visit pages
+    async validatePetAndOwnerDetailsComparedToDetailsFromOwnerInformationPage(petDetails: string [], ownerDetails: string []){
+        //1. Locate the table with pet and owner details
+        const detailsTable = this.page.locator('.table-striped td')
+        //2. Assert that the table has the same details as on the Owner Information page
+        await expect(this.page.locator('.table-striped td').first()).toHaveText(petDetails[0])
+        await expect(this.page.locator('.table-striped td').nth(1)).toHaveText(petDetails[1])
+        await expect(this.page.locator('.table-striped td').nth(2)).toHaveText(petDetails[2])
+        await expect(this.page.locator('.table-striped td').last()).toHaveText(ownerDetails[0])
     }
 
     async addDescriptionAndSaveTheVisit(description: string){
@@ -58,11 +39,7 @@ export class AddNewVisitPage {
         await this.page.locator('#description').fill(description)
         //2. Click on the "Add Visit" button
         await this.page.getByRole('button', {name: 'Add Visit'}).click()
-        //3. Save the description to the class variables to be used for assertion on the Owner Information page
-        if (description === "todays visit description") {
-            this.todaysVisitDescription = description
-        } else if (description === "past visit description") {
-            this.pastVisitDescription = description
-        }
+        //3. Save the description to be used for assertion on the Owner Information page
+        return description
     }
 }

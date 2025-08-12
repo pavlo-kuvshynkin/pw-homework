@@ -1,26 +1,24 @@
 import {Page, expect, Locator} from '@playwright/test'
 
-export class VeterinarianEditPage {
+export class EditVeterinarianPage {
 
     readonly page: Page
-    availableSpecialties: string[] = []
     
     constructor(page: Page){
         this.page = page
     }
 
-    async extractSpecialtiesForVeterinariansAndGetBackToAllVeterinariansPage(){
+    async getSpecialtiesForVeterinarians(){
         //1. Click on the Specialties drop-down menu to open it
         await this.page.locator('.dropdown-display').click()
         const specialtyOptions = this.page.locator('.dropdown-content label')
+        let availableSpecialties: string[] = []
         //2. Loop through the list of specialties and extract them into 'availableSpecialties'
         for(let option of await specialtyOptions.all()){
             const specialtyValue = await option.textContent()
-            this.availableSpecialties.push(specialtyValue!.trim())
+            availableSpecialties.push(specialtyValue!.trim())
         }
-        //3. Click on the Specialties drop-down menu to close it in order to see "Back" button and click this button
-        await this.page.locator('.dropdown-display').click()
-        await this.page.getByRole('button', {name: "Back"}).click()
+        return availableSpecialties
     }
 
     async selectAndSaveASpecialty(specialtyName: string){
@@ -33,7 +31,7 @@ export class VeterinarianEditPage {
         await this.page.getByRole('button', {name: "Save vet"}).click()
     }
 
-    async selectAndSaveMultipleSpecialties(){
+    async selectAndSaveAllSpecialties(){
         //1. Open the Specialties drop-down menu
         await this.page.locator('.dropdown-display').click()
         //2. Select multiple specialties
@@ -48,7 +46,7 @@ export class VeterinarianEditPage {
     }
 
     async removeSpecialtiesAndSave(){
-//1. Open the Specialties drop-down menu
+        //1. Open the Specialties drop-down menu
         await this.page.locator('.dropdown-display').click()
         //2. Select multiple specialties
         const allBoxes = this.page.getByRole('checkbox')

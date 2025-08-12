@@ -3,21 +3,20 @@ import {Page, expect, Locator} from '@playwright/test'
 export class EditPetPage {
 
     readonly page: Page
-    petType: string = ''
     
     constructor(page: Page){
         this.page = page
     }
 
-    async validatePrefilledPetDetailsAreMatchingTheDetailsFromOwnersInformationPage(ownerFullName: string, expectedPetName: string, expectedPetBirthDate: string, expectedPetType: string){
+    async validateInputFieldsValues(ownerFullName: string[], petDetails: string[]){
         //1. Validate owner full name value
-        await expect(this.page.locator('#owner_name')).toHaveValue(ownerFullName)
+        await expect(this.page.locator('#owner_name')).toHaveValue(ownerFullName[0])
         //2. Validate Pet Name value
-        await expect(this.page.getByLabel('Name')).toHaveValue(expectedPetName)
+        await expect(this.page.getByLabel('Name')).toHaveValue(petDetails[0])
         //3. Validate Pet birth date
-        await expect(this.page.locator('input[name="birthDate"]')).toHaveValue(expectedPetBirthDate.replaceAll(/-/g, '/')) 
+        await expect(this.page.locator('input[name="birthDate"]')).toHaveValue(petDetails[1].replaceAll(/-/g, '/')) 
         //4. Validate Pet Type
-        await expect(this.page.locator('#type1')).toHaveValue(expectedPetType)
+        await expect(this.page.locator('#type1')).toHaveValue(petDetails[2])
     }
 
     async validateAllPetTypesAreDisplayedInTheDropDown(expectedPetTypes: string[]){
@@ -28,12 +27,13 @@ export class EditPetPage {
         expect(allPetTypes).toEqual(expect.arrayContaining(expectedPetTypes))
     }
 
-    async selectPetTypeAndClickUpdateToSavePetDetails(petType: string){
-        await this.page.getByLabel('Type').click()
-        await this.page.locator('select').selectOption(petType)
+    async selectPetTypeAndClickUpdatePetButton(petType: string){
+        const petTypeField = this.page.locator('select')
+        await petTypeField.selectOption(petType)
+        const petTypeForAssertion = await petTypeField.inputValue()
         //2. Click "Save Pet" button
         await this.page.getByRole('button', {name: "Update Pet"}).click()
         //Store pet type for assertion in the test
-        this.petType = petType
+        return petTypeForAssertion
     }
 }

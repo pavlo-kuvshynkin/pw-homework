@@ -3,15 +3,14 @@ import {Page, expect, Locator} from '@playwright/test'
 export class SpecialtiesPage {
 
     readonly page: Page
-    private specialtiesFromPage: string[] = []
     
     constructor(page: Page){
         this.page = page
     }
 
-    async updateAnExistingSpecialtyAndValidateTheSpecialtyIsUpdated(targetedSpecialtyName: string, newSpecialtyName: string){
+    async updateAnExistingSpecialtyAndValidateTheSpecialtyIsUpdated(specialtyName: string, newSpecialtyName: string){
         //1. Select a targeted specialty row and go to edit it
-        await this.getSpecialtyRowByName(targetedSpecialtyName).getByRole('button', { name: 'Edit'}).click()
+        await this.page.getByRole('row', {name: specialtyName}).getByRole('button', { name: 'Edit'}).click()
         //2. Assert that "Edit Specialties" header displayed above the form
         await expect(this.page.getByRole('heading', {name: "Edit Specialty"})).toBeVisible()
         //3. Update the specialty to a new value e.g. "dermatology" and click "Update" button
@@ -19,8 +18,8 @@ export class SpecialtiesPage {
         await specialtyNameInputField.click()
         await specialtyNameInputField.fill(newSpecialtyName)
         await this.page.getByRole('button', {name: "Update"}).click()
-        //4. On the Specialties page assert that a specialty with a new is visible
-        await expect(this.getSpecialtyRowByName(newSpecialtyName)).toBeVisible()
+        //4. On the Specialties page assert that a new specialty is visible
+        await expect(this.page.getByRole('row', {name: newSpecialtyName})).toBeVisible()
     }
     
     async addAndSaveANewSpecialtyAndValidateTheSpecialtyIsVisibleIn(specialtyName: string){
@@ -33,27 +32,20 @@ export class SpecialtiesPage {
         await expect(this.page.locator('tbody tr').nth(3)).toBeVisible()
     }
 
-    async extractAllSpecialtiesIntoAnArray(){
+    async getListOfCurrentSpecialties(){
         //Extract values from all specialty rows and put them into the array
         const specialtyRows = this.page.locator('tbody tr')
-        this.specialtiesFromPage = []
+        let specialtiesFromPage: string[] = []
         
         for(let row of await specialtyRows.all()){
             const rowValue = await row.locator('input').inputValue()
-            this.specialtiesFromPage.push(rowValue!.trim())
+            specialtiesFromPage.push(rowValue!.trim())
         }
+        return specialtiesFromPage
     }
 
     async deleteSpecialtyFromTheList(specialtyName: string){
         //Locate specialty rows by the targeted name and then select 'Delete' button
-        await this.getSpecialtyRowByName(specialtyName).getByRole('button', {name: "Delete"}).click()
-    }
-
-    getStoredSpecialties(): string[] {
-        return this.specialtiesFromPage
-    }
-
-    private getSpecialtyRowByName(specialtyName: string): Locator{
-        return this.page.getByRole('row', {name: specialtyName})
+        await this.page.getByRole('row', {name: specialtyName}).getByRole('button', {name: "Delete"}).click()
     }
 }

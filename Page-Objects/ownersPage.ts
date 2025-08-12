@@ -5,15 +5,14 @@ export class OwnersPage {
     readonly page: Page
     petName: string = ''
     ownerPhoneNumber: string = ''
-    ownerFullName: string = ''
     
     constructor(page: Page){
         this.page = page
     }
 
-    async validatePetNameAndCityOfTheOwner(ownerName: string, petName: string, ownerCity: string){
-        //2. Locate the owner by the name "Jeff Black". Assert that this owner is from the city of "Monona" and he has a pet with a name "Lucky"
-        const targetedOwnerRow = this.getTargetedOwnerRowByName(ownerName)
+    async validatePetNameAndCityOfTheOwner(ownerFullName: string, petName: string, ownerCity: string){
+        //1. Locate the owner by the name "Jeff Black". Assert that this owner is from the city of "Monona" and he has a pet with a name "Lucky"
+        const targetedOwnerRow = this.page.getByRole('row', {name: ownerFullName})
         await expect(targetedOwnerRow.locator('td').nth(2)).toHaveText(ownerCity)
         await expect(targetedOwnerRow.locator('td').nth(4)).toHaveText(petName)
     }
@@ -23,29 +22,32 @@ export class OwnersPage {
         await expect(this.page.getByRole('row').filter({has: this.page.locator('td').nth(2).getByText('Madison')})).toHaveCount(ownersCount)
     }
 
-    async findingOwnerByPhoneNumberExtractingHisPetNameAndClickOwnerFullNameLink(phoneNumber: string){
+    async getOwnerPetNameByOwnerPhoneNumber(phoneNumber: string){
         //1. Locate the owner by the phone number
         const rowByOwnerPhoneNumber = this.page.getByRole('row', {name: phoneNumber})
         //2. Extract the Pet name displayed in the table for the owner and saving it to a const
-        this.petName = await rowByOwnerPhoneNumber.locator('td').nth(4).innerText()
-        //3. Then click on this owner full name link
-        this.ownerPhoneNumber = phoneNumber //Saving the phone number to the class variable in order to specify it in the test
-        await rowByOwnerPhoneNumber.getByRole('link').click()
+        const ownerPhoneNumber = await rowByOwnerPhoneNumber.locator('td').nth(4).innerText()
+        //Return owner phone number for assertion in the test
+        return ownerPhoneNumber
+    }
+
+    async selectOwnerByPhoneNumber(phoneNumber: string){
+        //Locate the owner by phone number and click the link
+        await this.page.getByRole('row', {name: phoneNumber}).getByRole('link').click()
+        await expect(this.page.getByRole('heading', {name: "Owner Information"})).toBeVisible()
     }
 
     async validatePetsThatHasMadisonCity(extractedPetNames: string[]){
-        await this.page.waitForResponse(response => response.url().includes('/petclinic/api/owners') && response.status() === 200)
-        //1. On the Owners page, assert that rows with Madison city have a list of pets: Leo, George, Mulligan, Freddy 
-        //Locate all rows with a city "Madison"
+        //1. Locate all rows with a city "Madison"
         const allMadisonRows = this.page.getByRole('row').filter({has: this.page.locator('td').nth(2).getByText('Madison')})
-        //Create an empty array to extract and put pet names
+        //2. Create an empty array to extract and put pet names
         let madisonPetNames: string[] = []
-        //Loop through each row and extract the pet name
+        //3. Loop through each row and extract the pet name
         for (let row of await allMadisonRows.all()) {
             const petNamesOfEachMadisonRow = await row.locator('td').last().textContent()
             madisonPetNames.push(petNamesOfEachMadisonRow!.trim()) //Putting the pet name to the array
         }
-        //2. Assert that the collected pet names match the expected values in an array
+        //4. Assert that the collected pet names match the expected values in an array
         expect(madisonPetNames).toEqual(expect.arrayContaining(extractedPetNames))
     }
 
@@ -58,7 +60,7 @@ export class OwnersPage {
             if(ownerLastName !== "Playwright"){
                 await this.page.waitForResponse('**/petclinic/api/owners*')
         //2. Assert each searched last name returns an owner with the same last name
-                for (let row of await this.page.locator('.ownerFullName').all()) {
+                for (let row of await this.page.locator('.ownerFullName').all()){
                     await expect(row).toContainText(ownerLastName)
                 }
             }
@@ -69,15 +71,23 @@ export class OwnersPage {
         }
     }
 
-    async selectOwnerByName(ownerName: string){
-        //Select the owner by the name and click on it
-        const ownerRow = this.getTargetedOwnerRowByName(ownerName)
-        await ownerRow.getByRole('link').click()
-        //Store selected owner full name
-        this.ownerFullName = await ownerRow.locator('td').first().innerText() //To be used for assertions on the Owner Information and Add new visit pages
+    async clickOnTheOwnerFullNameLink(ownerFullName: string){
+        //1. Click on the owner full name and assert the header is "Owner Information"
+        await this.page.getByRole('row', {name: ownerFullName}).getByRole('link', {name: ownerFullName}).click()
+        await this.page.waitForResponse('**/petclinic/api/owners/**')
+        await expect(this.page.getByRole('heading', {name: "Owner Information"})).toBeVisible()
     }
 
-    private getTargetedOwnerRowByName(ownerName: string): Locator{
-        return this.page.getByRole('row', {name: ownerName})
+    async getDetailsForATargetedOwner(ownerFullName: string){
+        //1. Locate the targeted owner by full name
+        const targetedOwnerRow = this.page.getByRole('row', {name: ownerFullName})
+        let ownerDetails: string[] = []
+        //2. Extract the Owner Full Name, Address, City, and Phone Number from the table and push into an array
+        const detailsTableCell = await targetedOwnerRow.getByRole('cell').all()
+        for (let tableCell of detailsTableCell) {
+            const cellContent = await tableCell.innerText()
+            ownerDetails.push(cellContent!)
+        }
+        return ownerDetails
     }
 }

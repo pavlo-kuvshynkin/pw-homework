@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test'
+import { Page, expect } from '@playwright/test'
 
 export class NavigationPage {
 
@@ -11,36 +11,23 @@ export class NavigationPage {
     async veterinariansPage(){
         await this.page.getByRole('button', {name: "Veterinarians"}).click()
         await this.page.getByRole('link', {name: 'All'}).click()
+        await expect(this.page.getByRole('heading', {name: "Veterinarians"})).toBeVisible()
     }
-
-    // async addNewVeterinarianPage(){
-    //     await this.selectMenuItems('Veterinarians')
-    //     await this.page.getByRole('link', {name: 'Add New'}).click()
-    // }
-
 
     async ownersPage(){
         await this.page.getByRole('button', {name: 'Owners'}).click()
         await this.page.getByRole('link', { name: 'Search'}).click()
+        await this.page.waitForResponse('**/petclinic/api/owners')
+        await expect(this.page.getByRole('heading', {name: "Owners"})).toBeVisible()
     }
-
-    // async addNewOwnerPage(){
-    //     await this.selectMenuItems('Owners')
-    //     await this.page.getByRole('link', {name: 'Add New'}).click()
-    // }
 
     async petTypesPage(){
         await this.page.getByRole('link', { name:'Pet Types'}).click()
+        await expect(this.page.getByRole('heading', {name: "Pet Types"})).toBeVisible()
     }
 
     async specialtiesPage(){
         await this.page.getByRole('link', {name:'Specialties'}).click()
+        await expect(this.page.getByRole('heading', {name: "Specialties"})).toBeVisible()
     }
-
-    // private async selectMenuItems(groupItemName: string){
-    //     const groupMenuItem = this.page.getByRole('link', {name: groupItemName})
-    //     const itemExpandedState = await groupMenuItem.getAttribute('arial-expanded')
-    //     if(itemExpandedState == "false")
-    //         await groupMenuItem.click({force: true})
-    // }
 }

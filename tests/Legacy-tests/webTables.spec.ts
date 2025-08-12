@@ -157,4 +157,44 @@ test.describe('Web tables of Veterinarians', () => {
         await page.getByRole('link', { name: "All" }).click()
         await expect(rowOfRafaelOrtega.locator('td').nth(1)).toBeEmpty()
     })
+
+    test('something to test', async ({page}) => {
+        // 1. Click the 'Owners' button from nav bar and select 'Search.
+        await page.getByRole('button', { name: 'Owners' }).click()
+        await page.getByRole('link', { name: 'Search' }).click()
+        await page.waitForResponse('**/petclinic/api/owners')
+        //2. Locate the targeted owner row by full name
+        const targetedOwnerRow = page.getByRole('row', {name: "Jean Coleman"})
+        let ownerDetails: string[] = []
+        //2. Extract the Owner Full Name, Address, City, and Phone Number from the table and push into an array
+        const detailsTableCell = await targetedOwnerRow.locator('td').all()
+        for (let tableCell of detailsTableCell) {
+            const cellContent = await tableCell.innerText()
+            ownerDetails.push(cellContent!)
+        }
+        //3. navigate to the owner details page
+        await targetedOwnerRow.getByRole('link').click()
+        await page.waitForResponse('**/petclinic/api/owners/**')
+        await expect(page.getByRole('heading', {name: "Owner Information"})).toBeVisible()
+        //4. 
+        const ownerDetailsTable = page.getByRole('table', {name: "Jean Coleman"})
+        let ownerInformation: string[] = []
+        //5. Extract the Owner Full Name, Address, City, and Phone Number from the table and push into an array
+        const ownerDetailRows = await ownerDetailsTable.locator('tr td').all()
+        for (let tableRow of ownerDetailRows) {
+            const cellContent = await tableRow.innerText()
+            ownerInformation.push(cellContent!.trim())
+        }
+        //6. Locate all tables with pet details
+        const tablesWithPetDetails = await page.locator('app-pet-list').all()
+        for (let petDetailsTable of tablesWithPetDetails){
+            const petNameText = await petDetailsTable.locator('dd').first().innerText()
+            ownerInformation.push(petNameText!)
+        }
+        //7. Assert that extracted owner details are matching
+        console.log(ownerDetails)
+        console.log(ownerInformation)
+        // Compare only the first four fields: Full Name, Address, City, Phone Number
+        expect(ownerDetails).toEqual(ownerInformation)
+    })
 })
