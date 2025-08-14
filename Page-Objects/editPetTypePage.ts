@@ -8,7 +8,7 @@ export class EditPetTypePage {
         this.page = page
     }
 
-    async fillInTheNewPetTypeNameAndClickUpdate(newPetTypeName: string){
+    async fillInPetTypeNameAndClickUpdate(newPetTypeName: string){
         //Filling the pet type name field and clicking the "Update" button
         const nameInputField = this.page.getByRole('textbox')
         await nameInputField.click()

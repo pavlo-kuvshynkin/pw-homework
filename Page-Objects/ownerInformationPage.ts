@@ -8,7 +8,7 @@ export class OwnerInformationPage {
     constructor(page: Page){
         this.page = page
     }
-    //TO BE EDITED
+
     async validateOwnerPhoneAndPetNameIsDisplayedGoBackToOwnersPage(phoneNumber: string, petName: string){
         //1. On the Owner Information page, assert "Telephone" value
         await expect(this.page.locator('table tr', {hasText: "Telephone"})).toContainText(phoneNumber)
@@ -87,7 +87,7 @@ export class OwnerInformationPage {
         await expect(this.page.getByRole('heading')).toHaveText("Pet")
     }
 
-    async getTargetedPetDetails(petName: string){
+    async getPetDetails(petName: string){
         //1. Locate the targeted pet by name and store all the details
         const targetedPetDetailsTable = this.page.locator('app-pet-list', {hasText: petName})
         let petDetails: string [] = []
@@ -101,7 +101,7 @@ export class OwnerInformationPage {
         return petDetails
     }
 
-    async extractOwnerDetails(){
+    async getOwnerDetails(){
         //1. Locate the owner details table by full name
         const ownerDetailsTable = this.page.getByRole('table').first()
         let ownerDetails: string[] = []

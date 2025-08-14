@@ -3,8 +3,6 @@ import {Page, expect, Locator} from '@playwright/test'
 export class OwnersPage {
 
     readonly page: Page
-    petName: string = ''
-    ownerPhoneNumber: string = ''
     
     constructor(page: Page){
         this.page = page
@@ -26,9 +24,9 @@ export class OwnersPage {
         //1. Locate the owner by the phone number
         const rowByOwnerPhoneNumber = this.page.getByRole('row', {name: phoneNumber})
         //2. Extract the Pet name displayed in the table for the owner and saving it to a const
-        const ownerPhoneNumber = await rowByOwnerPhoneNumber.locator('td').nth(4).innerText()
+        const petNameOfTheOwner = await rowByOwnerPhoneNumber.locator('td').nth(4).innerText()
         //Return owner phone number for assertion in the test
-        return ownerPhoneNumber
+        return petNameOfTheOwner
     }
 
     async selectOwnerByPhoneNumber(phoneNumber: string){

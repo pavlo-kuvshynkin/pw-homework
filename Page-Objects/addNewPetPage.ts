@@ -7,13 +7,11 @@ export class AddNewPetPage extends HelperBase {
         super(page)
     }
 
-    async fillInPetNameToTheNameFieldAndAssertNameIsValidAndCheckIconIsAppeared(petName: string){
-        //3. In the Name field, type any new pet name
-        const nameInputFieldSection = this.page.locator('.has-feedback', {has: this.page.getByLabel('Name')})
-        await nameInputFieldSection.getByRole('textbox', {name: 'name'}).fill(petName)
-        //4. Assert that an icon in the input field changed from "remove" to "ok"
-        await expect(nameInputFieldSection.locator('span')).toHaveClass('glyphicon form-control-feedback glyphicon-ok')
-        return petName
+    async fillInPetNameIntoNameFieldAndValidateCheckIcon(petName: string){
+        //1. In the Name field, type any new pet name
+        await this.page.getByLabel('Name').fill(petName)
+        //2. Assert that an icon in the input field changed from "remove" to "ok"
+        await expect(this.page.locator('span.glyphicon.form-control-feedback.glyphicon-ok')).toBeVisible()
     }
 
     async selectBirthDateFromThePastAndAssertSelectedDate(numberOfDaysFromToday: number){
@@ -30,8 +28,6 @@ export class AddNewPetPage extends HelperBase {
         const petTypeForAssertion = await petTypeField.inputValue()
         //2. Click "Save Pet" button
         await this.page.getByRole('button', {name: "Save Pet"}).click()
-        //Store formatted pet type for assertion in the test
-        return petTypeForAssertion
     }
 
     async getDateFromTheInputFieldInHyphenFormat(){

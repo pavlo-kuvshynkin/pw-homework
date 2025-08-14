@@ -52,7 +52,7 @@ test.describe('Validating Veterinarians and Specialties functionality', () => {
         await pm.onEditVeterinarianPage().selectAndSaveAllSpecialties()
         await pm.onVeterinariansPage().validateDisplayedSelectedSpecialties("James Carter", availableSpecialties)
         await pm.onVeterinariansPage().clickEditButtonForVeterinarian("James Carter")
-        await pm.onEditVeterinarianPage().removeSpecialtiesAndSave()
+        await pm.onEditVeterinarianPage().removeAllSpecialtiesAndSave()
         await pm.onVeterinariansPage().validateDisplayedSelectedSpecialties("James Carter", [])
     })
 })

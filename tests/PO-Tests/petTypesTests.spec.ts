@@ -11,11 +11,11 @@ test.describe('Validating Pet types functionality', () => {
     await pm.navigateTo().petTypesPage()
     //Updating the pet type row "cat" to a new value "rabbit"
     await pm.onPetTypesPage().clickOnEditButtonForPetType("cat")
-    await pm.onEditPetTypePage().fillInTheNewPetTypeNameAndClickUpdate("rabbit")
+    await pm.onEditPetTypePage().fillInPetTypeNameAndClickUpdate("rabbit")
     await pm.onPetTypesPage().validatePetTypeName("rabbit")
     //Updating the same field back to the value "cat"
     await pm.onPetTypesPage().clickOnEditButtonForPetType("rabbit")
-    await pm.onEditPetTypePage().fillInTheNewPetTypeNameAndClickUpdate("cat")
+    await pm.onEditPetTypePage().fillInPetTypeNameAndClickUpdate("cat")
     await pm.onPetTypesPage().validatePetTypeName("cat")
     //Going to update a dog pet type row, cancelling updating and validating value hasn't changed
     await pm.onPetTypesPage().clickOnEditButtonForPetType("dog")

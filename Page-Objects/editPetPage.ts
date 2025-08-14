@@ -34,6 +34,5 @@ export class EditPetPage {
         //2. Click "Save Pet" button
         await this.page.getByRole('button', {name: "Update Pet"}).click()
         //Store pet type for assertion in the test
-        return petTypeForAssertion
     }
 }

@@ -45,7 +45,7 @@ export class EditVeterinarianPage {
         await this.page.getByRole('button', {name: "Save vet"}).click()
     }
 
-    async removeSpecialtiesAndSave(){
+    async removeAllSpecialtiesAndSave(){
         //1. Open the Specialties drop-down menu
         await this.page.locator('.dropdown-display').click()
         //2. Select multiple specialties
