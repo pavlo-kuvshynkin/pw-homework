@@ -100,7 +100,7 @@ test.describe('Web datepicker scenarios', () => {
         await page.locator('#description').fill("massage therapy")
         await page.getByRole('button', {name: 'Add Visit'}).click()
         //13. Assert that date added at step 11 is in chronological order in relation to the previous dates for "Samantha" pet on the "Owner Information" page. The date of visit above this date in the table should be greater
-        const firstVisitsDateText = await allPetVisitsTableRows.filter({hasText: "dermatologists visit"}).locator('td').first(). innerText()
+        const firstVisitsDateText = await allPetVisitsTableRows.filter({hasText: "dermatologists visit"}).locator('td').first().innerText()
         const secondVisitsDateText = await allPetVisitsTableRows.filter({hasText: "massage therapy"}).locator('td').first().innerText()
         // Converting date strings into a date type before for assertion
         const firstVisitDate = new Date(firstVisitsDateText)
