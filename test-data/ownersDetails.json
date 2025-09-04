@@ -1,0 +1,159 @@
+[
+    {
+        "firstName": "Aaron",
+        "lastName": "Ramsey",
+        "address": "2693 Commerce St.",
+        "city": "McFarland",
+        "telephone": "6085558763",
+        "id": 33,
+        "pets": [
+            {
+                "name": "Max",
+                "birthDate": "1995-09-04",
+                "type": {
+                    "name": "cat",
+                    "id": 487
+                },
+                "id": 532,
+                "ownerId": 207,
+                "visits": [
+                    {
+                        "date": "2011-03-04",
+                        "description": "first visit",
+                        "id": 1054,
+                        "petId": null
+                    },
+                    {
+                        "date": "2008-09-04",
+                        "description": "second visit",
+                        "id": 1053,
+                        "petId": null
+                    },
+                    {
+                        "date": "2025-06-27",
+                        "description": "third visit",
+                        "id": 5217,
+                        "petId": null
+                    },
+                    {
+                        "date": "2010-03-04",
+                        "description": "fourth visit",
+                        "id": 1052,
+                        "petId": null
+                    },
+                    {
+                        "date": "2009-06-04",
+                        "description": "fifth visit",
+                        "id": 1055,
+                        "petId": null
+                    },{
+                        "date": "2017-07-04",
+                        "description": "sixth visit",
+                        "id": 1054,
+                        "petId": null
+                    },
+                    {
+                        "date": "2018-09-04",
+                        "description": "seventh visit",
+                        "id": 1053,
+                        "petId": null
+                    },
+                    {
+                        "date": "2022-02-27",
+                        "description": "eighth visit",
+                        "id": 5217,
+                        "petId": null
+                    },
+                    {
+                        "date": "2019-04-04",
+                        "description": "ninth visit",
+                        "id": 1052,
+                        "petId": null
+                    },
+                    {
+                        "date": "2021-06-04",
+                        "description": "tenth visit",
+                        "id": 1055,
+                        "petId": null
+                    }
+                ]
+            },
+            {
+                "name": "Samantha",
+                "birthDate": "1995-09-04",
+                "type": {
+                    "name": "dog",
+                    "id": 487
+                },
+                "id": 531,
+                "ownerId": 207,
+                "visits": []
+            }
+        ]
+    },
+    {
+        "firstName": "Jean",
+        "lastName": "Coleman",
+        "address": "105 N. Lake St.",
+        "city": "Monona",
+        "telephone": "6085552654",
+        "id": 207,
+        "pets": [
+            {
+                "name": "Jewel",
+                "birthDate": "2000-03-07",
+                "type": {
+                    "name": "hamster",
+                    "id": 481
+                },
+                "id": 528,
+                "ownerId": 207,
+                "visits": []
+            },
+            {
+                "name": "Rosy",
+                "birthDate": "2001-04-17",
+                "type": {
+                    "name": "lizard",
+                    "id": 482
+                },
+                "id": 527,
+                "ownerId": 207,
+                "visits": []
+            },
+            {
+                "name": "Tidy",
+                "birthDate": "2016-07-13",
+                "type": {
+                    "name": "snake",
+                    "id": 490
+                },
+                "id": 3817,
+                "ownerId": 207,
+                "visits": []
+            },
+            {
+                "name": "Pity",
+                "birthDate": "2017-07-13",
+                "type": {
+                    "name": "cat",
+                    "id": 494
+                },
+                "id": 381,
+                "ownerId": 207,
+                "visits": []
+            },
+            {
+                "name": "Cooper",
+                "birthDate": "2018-07-13",
+                "type": {
+                    "name": "dog",
+                    "id": 493
+                },
+                "id": 347,
+                "ownerId": 207,
+                "visits": []
+            }
+        ]
+    }
+]
