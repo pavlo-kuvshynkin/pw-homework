@@ -42,8 +42,8 @@ test('Owners details validation', async ({ page }) => {
     ]);
     //4. Validate owner has 2 pets and their names are matching the mock data
     const allPetsTables = page.locator('app-pet-list');
-    await expect(allPetsTables.locator('dd').first()).toHaveText(owners[0].pets[0].name);
-    await expect(allPetsTables.locator('dd').last()).toHaveText(owners[0].pets[1].name);
+    await expect(allPetsTables.first().locator('dd').first()).toHaveText(owners[0].pets[0].name);
+    await expect(allPetsTables.last().locator('dd').first()).toHaveText(owners[0].pets[1].name);
     //5. Validate number of visits for the first pet
     await expect(page.locator('.table-condensed > tr')).toHaveCount(10)
 });
