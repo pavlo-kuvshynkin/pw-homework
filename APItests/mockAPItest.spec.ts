@@ -26,20 +26,10 @@ test('Owners details validation', async ({ page }) => {
     await page.getByRole('link', {name: `${owners[0].firstName} ${owners[0].lastName}`}).click();
     //3. Validate owner details are matching the mock data
     await expect(page.getByRole('heading').first()).toHaveText('Owner Information');
-    //Locating and extracting owner details from the table
-    const ownerDetailsTable = page.getByRole('table').first();
-        let ownerDetails: string[] = [];
-        const ownerDetailRows = await ownerDetailsTable.locator('tr').all();
-        for (let tableRow of ownerDetailRows) {
-            const cellContent = await tableRow.locator('td').innerText()
-            ownerDetails.push(cellContent!);
-        }
-    expect(ownerDetails).toEqual([
-        owners[0].firstName + ' ' + owners[0].lastName,
-        owners[0].address,
-        owners[0].city,
-        owners[0].telephone
-    ]);
+    await expect(page.locator(".ownerFullName")).toHaveText(owners[0].firstName + ' ' + owners[0].lastName)
+    await expect(page.getByRole('row', {name: "Address"})).toContainText(owners[0].address)
+    await expect(page.getByRole('row', {name: "City"})).toContainText(owners[0].city)
+    await expect(page.getByRole('row', {name: "Telephone"})).toContainText(owners[0].telephone)
     //4. Validate owner has 2 pets and their names are matching the mock data
     const allPetsTables = page.locator('app-pet-list');
     await expect(allPetsTables.first().locator('dd').first()).toHaveText(owners[0].pets[0].name);
