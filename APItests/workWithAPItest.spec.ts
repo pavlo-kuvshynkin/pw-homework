@@ -77,7 +77,7 @@ test('Owners details validation', async ({ page }) => {
     //1. Validate that 2 owners are displayed in the table
     await expect(page.locator('tbody > tr')).toHaveCount(2);
     //2. Navigate to the first owner's details page
-    await page.getByRole('link', {name: `${owners[0].firstName} ${owners[0].lastName}`}).click();
+    await page.getByRole('link', {name: owners[0].firstName + ' ' + owners[0].lastName}).click();
     //3. Validate owner details are matching the mock data
     await expect(page.getByRole('heading').first()).toHaveText('Owner Information');
     await expect(page.locator(".ownerFullName")).toHaveText(owners[0].firstName + ' ' + owners[0].lastName)
