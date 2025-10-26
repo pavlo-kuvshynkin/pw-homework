@@ -17,9 +17,10 @@ test('TC_1: Delete specialty validation', async ({page, request}) => {
     await expect(page.getByRole('row', {name: 'API testing expert'})).toBeVisible();
     //4. Delete the created specialty
     await page.getByRole('row', {name: 'API testing expert'}).getByRole('button', {name: 'Delete'}).click();
+    await page.reload();
     //5. Validate that the deleted specialty is not presented anymore
     await expect(page.getByText('API testing expert')).not.toBeVisible();
-})
+});
 
 test('TC_2: Add and delete veterinarian', async ({page, request}) => {
     //1. Create a new Veterinarian via API without specialties and validate status code 201
@@ -45,7 +46,7 @@ test('TC_2: Add and delete veterinarian', async ({page, request}) => {
     await expect(newVetRow).toBeVisible();
     await expect(newVetRow.getByRole('cell').nth(1)).toBeEmpty();
     //4. Click "Edit Vet" button for newly created veterinarian
-    newVetRow.getByRole('button', {name: 'Edit Vet'}).click();
+    await newVetRow.getByRole('button', {name: 'Edit Vet'}).click();
     //5. On "Edit Veterinarian" page, select "dentistry" specialty from the drop-down, and click Save Vet button
     await page.locator('.dropdown-display').click();
     await page.getByRole('checkbox', {name: "dentistry"}).check();
@@ -59,7 +60,7 @@ test('TC_2: Add and delete veterinarian', async ({page, request}) => {
     const allVetsResponse = await request.get('https://petclinic-api.bondaracademy.com/petclinic/api/vets');
     const allVetsResponseBody = await allVetsResponse.json();
     for (let vet of allVetsResponseBody){
-        expect(vet.id).not.toEqual(newVetRow)
+        expect(vet.id).not.toEqual(newVetID);
     }
 })
 
@@ -114,5 +115,6 @@ test('TC_3: New specialty is displayed', async ({page, request}) => {
     expect(deleteSpecialty.status()).toEqual(204);
     //10. Navigate to the Specialties page and add assert that "api testing ninja" does not exist in the list of specialties
     await pm.navigateTo().specialtiesPage();
+    await page.waitForResponse('**/petclinic/api/specialties');
     await expect(page.getByRole('cell', {name: "API testing ninja"})).not.toBeVisible();
 })
