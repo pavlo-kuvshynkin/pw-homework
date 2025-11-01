@@ -3,16 +3,6 @@ import owners from '../test-data/ownersDetails.json';
 import { PageManager } from '../Page-Objects/pageManager';
 
 test.beforeEach(async ({ page }) => {
-    // await page.route('*/**/petclinic/api/owners', async route => {
-    //     await route.fulfill({
-    //         body: JSON.stringify(owners)
-    //     });
-    // })
-    // await page.route('*/**/petclinic/api/owners/*', async route => {
-    //     await route.fulfill({
-    //         body: JSON.stringify(owners[0])
-    //     });
-    // });
 
     await page.route('*/**/petclinic/api/vets', async route => {
         const response = await route.fetch()
@@ -69,7 +59,19 @@ test.beforeEach(async ({ page }) => {
     });
 });
 
-test('Owners details validation', async ({ page }) => {
+test('TC1_Owners details validation', async ({ page }) => {
+    //Setting up route to capture the POST request response
+    await page.route('*/**/petclinic/api/owners', async route => {
+        await route.fulfill({
+            body: JSON.stringify(owners)
+        });
+    });
+    await page.route('*/**/petclinic/api/owners/*', async route => {
+        await route.fulfill({
+            body: JSON.stringify(owners[0])
+        });
+    });
+    
     await page.goto('/');
     const pm = new PageManager(page);
     await pm.navigateTo().ownersPage();
@@ -92,7 +94,8 @@ test('Owners details validation', async ({ page }) => {
     await expect(page.locator('.table-condensed > tr')).toHaveCount(10)
 });
 
-test('Intercept API response', async ({ page }) => {
+test('TC2_Intercept API response', async ({ page }) => {
+    
     await page.goto('/');
     const pm = new PageManager(page);
     //1. Navigate to the Veterinarians page
@@ -100,9 +103,10 @@ test('Intercept API response', async ({ page }) => {
     await expect(page.getByRole('heading')).toHaveText('Veterinarians');
     //2. Validate number of specialties for the "Sharon Jenkins" is equal to 10
     await expect(page.getByRole('row', {name: "Sharon Jenkins"}).getByRole('cell').nth(1).locator('div')).toHaveCount(10)
-})
+});
 
-test('Add and delete an owner', async({page, request}) => {
+test('TC3_Add and delete an owner', async({page, request}) => {
+    
     await page.goto('/');
     const pm = new PageManager(page);
     //1. Click "Add Owner" button
@@ -133,4 +137,4 @@ test('Add and delete an owner', async({page, request}) => {
     await page.reload();
     //7. Assert that the deleted owner is no longer displayed in the owners list
     await expect(page.getByRole('row', {name: 'Bukayo Saka'})).not.toBeVisible();
-})
+});
